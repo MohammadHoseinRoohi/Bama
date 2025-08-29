@@ -6,7 +6,7 @@ using Practice4.Entities.Base;
 
 namespace Practice4.Entities
 {
-    public class Ad : Thing
+    public class CarAdvertisement : Thing
     {
         // ماشین
         public required Car Car { get; set; }
