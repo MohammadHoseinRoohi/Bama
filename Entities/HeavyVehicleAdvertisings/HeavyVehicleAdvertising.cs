@@ -9,6 +9,8 @@ namespace Practice4.Entities.HeavyVehicleAdvertisings
 {
     public class HeavyVehicleAdvertising : Thing
     {
+        // کاربر
+        public required User User { get; set; }
         // ماشین سنگین
         public required HeavyVehicle HeavyVehicle { get; set; }
         // قیمت

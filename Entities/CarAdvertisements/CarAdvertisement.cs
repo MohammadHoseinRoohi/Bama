@@ -8,6 +8,8 @@ namespace Practice4.Entities.CarAdvertisements
 {
     public class CarAdvertisement : Thing
     {
+        // کاربر
+        public required User User { get; set; }
         // ماشین
         public required Car Car { get; set; }
         // قیمت
