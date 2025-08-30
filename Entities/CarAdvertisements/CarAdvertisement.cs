@@ -4,19 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Practice4.Entities.Base;
 
-namespace Practice4.Entities
+namespace Practice4.Entities.CarAdvertisements
 {
     public class CarAdvertisement : Thing
     {
         // ماشین
         public required Car Car { get; set; }
         // قیمت
-        public required Price Price { get; set; }
-        // توضیحات
-        public required Description Description { get; set; }
+        public Price? Price { get; set; }
+        // آدرس عکس یا ویدیو
+        public string? PictureOrVideo { get; set; }
         // محل بازدید
-        public required string PlaceOfVisit { get; set; }
-
-        // عملیات بارگزاری عکس با فرانت است با بک و اینکه چطور باید در دیتابیس ذخیره شود؟
+        public required VisitLocation VisitLocation { get; set; }
+        // منطقه آزاد
+        public bool FreeRegion { get; set; }
+        // توضیحات
+        public string? Description { get; set; }
     }
 }

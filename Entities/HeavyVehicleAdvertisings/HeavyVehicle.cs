@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Practice4.Entities.Base;
 
-namespace Practice4.Entities.MotorcycleAdvertisements
+namespace Practice4.Entities.HeavyVehicleAdvertisings
 {
-    public class MotorcycleAdvertisement : Thing
+    public class HeavyVehicle : Thing
     {
         
     }
