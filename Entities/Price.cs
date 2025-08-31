@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Practice4.Entities.Base;
 
-namespace Practice4.Entities.CarAdvertisements
+namespace Practice4.Entities
 {
     public class Price : Thing
     {
