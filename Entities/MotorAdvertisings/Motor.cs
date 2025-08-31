@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Practice4.Entities.Base;
 
-namespace Practice4.Entities.CarAdvertisements
+namespace Practice4.Entities.MotorAdvertisings
 {
-    public class Car : Thing
+    public class Motor : Thing
     {
         // برند 
         public required string Brand { get; set; }
@@ -14,15 +14,13 @@ namespace Practice4.Entities.CarAdvertisements
         public required string Madel { get; set; }
         // سال
         public double Year { get; set; }
-        // تیپ خودرو
-        public required string VehicleType { get; set; }
+        // نوع سوخت
+        public required string FuelYype { get; set; }
+        // گیربکس
+        public string? Gearbox { get; set; }
         // کارکرد
         public required string Mileage { get; set; }
         // رنگ بدنه
         public required string BodyColor { get; set; }
-        // وضعیت بدنه
-        public required string BodyCondition { get; set; }
-        // رنگ داخلی
-        public required string InteriorColor { get; set; }
     }
 }
