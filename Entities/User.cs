@@ -11,9 +11,13 @@ namespace Practice4.Entities
 {
     public class User : Thing
     {
+        // شماره تماس
         public double PhoneNumber { get; set; }
+        // آگهی ماشین
         public CarAdvertisement? CarAdvertisement { get; set; }
+        // آگهی ماشین سنگین
         public HeavyVehicleAdvertising? HeavyVehicleAdvertising { get; set; }
+        // آگهی موتور
         public MotorAdvertising? MotorAdvertising { get; set; }
     }
 }
