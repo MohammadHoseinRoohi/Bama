@@ -22,5 +22,7 @@ namespace Practice4.Entities.CarAdvertisements
         public bool FreeRegion { get; set; }
         // توضیحات
         public string? Description { get; set; }
+        
+        // سرویس پیامکی؟؟؟؟؟
     }
 }
