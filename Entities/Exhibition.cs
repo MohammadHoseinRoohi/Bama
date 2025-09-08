@@ -21,7 +21,7 @@ namespace Practice4.Entities
         // استان 
         public required string Province { get; set; }
         // تلفن ثابت
-        public double MyProperty { get; set; }
+        public double Landline { get; set; }
         // ایمیل
         public required string Email { get; set; }
         // آدرس
