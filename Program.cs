@@ -2,6 +2,7 @@ using Practice4.DbContextes;
 using Practice4.Entities;
 using Practice4.Entities.CarAdvertisements;
 using Practice4.Entities.HeavyVehicleAdvertisings;
+using Practice4.Entities.MotorAdvertisings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -168,6 +169,47 @@ app.MapDelete("api/v1/installments/remove/{id}", (int id) =>
     db.SaveChanges();
     return "Installments Removed";
 });
-
+app.MapPost("api/v1/motors/creat", (Motor motor) =>
+{
+    var db = new BamaDB();
+    db.Motors.Add(motor);
+    db.SaveChanges();
+    return "Motor Created!";
+});
+app.MapGet("api/v1/motors/list", () =>
+{
+    var db = new BamaDB();
+    return db.Motors.ToList();
+});
+app.MapPut("api/v1/motors/update/{id}", (int id, Motor motor) =>
+{
+    var db = new BamaDB();
+    var newMotor = db.Motors.Find(id);
+    if (newMotor == null)
+    {
+        return "Not Found!";
+    }
+    newMotor.BodyColor = motor.BodyColor;
+    newMotor.Brand = motor.Brand;
+    newMotor.FuelYype = motor.FuelYype;
+    newMotor.Gearbox = motor.Gearbox;
+    newMotor.Madel = motor.Madel;
+    newMotor.Mileage = motor.Mileage;
+    newMotor.Year = motor.Year;
+    db.SaveChanges();
+    return "Motor Updated!";
+});
+app.MapDelete("api/v1/motors/remove/{id}", (int id) =>
+{
+    var db = new BamaDB();
+    var motor = db.Motors.Find(id);
+    if (motor == null)
+    {
+        return "Not Found!";
+    }
+    db.Motors.Remove(motor);
+    db.SaveChanges();
+    return "Motor Removed!";
+});
 
 app.Run();
