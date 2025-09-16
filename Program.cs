@@ -7,7 +7,7 @@ using Practice4.Entities.MotorAdvertisings;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<BamaDB>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -210,6 +210,42 @@ app.MapDelete("api/v1/motors/remove/{id}", (int id) =>
     db.Motors.Remove(motor);
     db.SaveChanges();
     return "Motor Removed!";
+});
+app.MapPost("api/v1/users/creat", (User user) =>
+{
+    var db = new BamaDB();
+    db.Users.Add(user);
+    db.SaveChanges();
+    return "User Created!";
+});
+app.MapGet("api/v1/users/list", () =>
+{
+    var db = new BamaDB();
+    return db.Users.ToList();
+});
+app.MapPut("api/v1/users/update/{id}", (int id, User user) =>
+{
+    var db = new BamaDB();
+    var newUser = db.Users.Find(id);
+    if (newUser == null)
+    {
+        return "Not Found!";
+    }
+    newUser.PhoneNumber = user.PhoneNumber;
+    db.SaveChanges();
+    return "User Updated!";
+});
+app.MapDelete("api/v1/users/remove/{id}", (int id) =>
+{
+    var db = new BamaDB();
+    var user = db.Users.Find(id);
+    if (user == null)
+    {
+        return "Not Found!";
+    }
+    db.Users.Remove(user);
+    db.SaveChanges();
+    return "User Removed!";
 });
 
 app.Run();
