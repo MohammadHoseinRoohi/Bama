@@ -120,11 +120,23 @@ app.MapGet("api/v1/heavyVehicles/list", () =>
 app.MapPut("api/v1/heavyVehicles/update/{id}", (int id, HeavyVehicle heavyVehicle) =>
 {
     var db = new BamaDB();
-    var h = db.HeavyVehicles.Find(id);
-    if (h == null)
+    var newHeavyVehicle = db.HeavyVehicles.Find(id);
+    if (newHeavyVehicle == null)
     {
         return "Not Found!";
     }
+    newHeavyVehicle.BodyColor = heavyVehicle.BodyColor;
+    newHeavyVehicle.BodyCondition  =heavyVehicle.BodyCondition;
+    newHeavyVehicle.Brand = heavyVehicle.Brand;
+    newHeavyVehicle.Gearbox = heavyVehicle.Gearbox;
+    newHeavyVehicle.Madel = heavyVehicle.Madel;
+    newHeavyVehicle.Mileage = heavyVehicle.Mileage;
+    newHeavyVehicle.OperatingHours = heavyVehicle.OperatingHours;
+    newHeavyVehicle.RepairHistory = heavyVehicle.RepairHistory;
+    newHeavyVehicle.UserSubcategory = heavyVehicle.UserSubcategory;
+    newHeavyVehicle.UserYype = heavyVehicle.UserYype;
+    newHeavyVehicle.VehicleType = heavyVehicle.VehicleType;
+    newHeavyVehicle.Year = heavyVehicle.Year;
     db.SaveChanges();
     return "HeavyVehicle Updated!";
 });
