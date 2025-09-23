@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Practice4.DbContextes;
 using Practice4.Entities;
 using Practice4.Entities.CarAdvertisements;
@@ -60,6 +61,52 @@ app.MapDelete("api/v1/cars/remove/{id}", (int id) =>
     db.SaveChanges();
     return "Car Removed!";
 });
+app.MapPost("api/v2/cars/creat", (
+    [FromBody] Car car,
+    [FromServices] BamaDB db) =>
+{
+    db.Cars.Add(car);
+    db.SaveChanges();
+    return "Car Created!";
+});
+app.MapGet("api/v2/cars/list", ([FromServices] BamaDB db) =>
+{
+    return db.Cars.ToList();
+});
+app.MapPut("api/v2/cars/update/{id}", (
+    [FromRoute] int id,
+    [FromBody] Car car,
+    [FromServices] BamaDB db) =>
+{
+    var newCar = db.Cars.Find(id);
+    if (newCar == null)
+    {
+        return "Not Found!";
+    }
+    newCar.BodyColor = car.BodyColor;
+    newCar.BodyCondition = car.BodyCondition;
+    newCar.Brand = car.Brand;
+    newCar.InteriorColor = car.InteriorColor;
+    newCar.Madel = car.Madel;
+    newCar.Mileage = car.Mileage;
+    newCar.VehicleType = car.VehicleType;
+    newCar.Year = car.Year;
+    db.SaveChanges();
+    return "Car Updated!";
+});
+app.MapDelete("api/v2/cars/remove/{id}", (
+    [FromRoute] int id,
+    [FromServices] BamaDB db) =>
+{
+    var car = db.Cars.Find(id);
+    if (car == null)
+    {
+        return "Not Found!";
+    }
+    db.Cars.Remove(car);
+    db.SaveChanges();
+    return "Car Removed!";
+});
 app.MapPost("api/v1/exhibitions/creat", (Exhibition exhibition) =>
 {
     var db = new BamaDB();
@@ -105,6 +152,54 @@ app.MapDelete("api/v1/exhibitions/remove/{id}", (int id) =>
     db.SaveChanges();
     return "Exhibition Removed!";
 });
+app.MapPost("api/v2/exhibitions/creat", (
+    [FromBody] Exhibition exhibition,
+    [FromServices] BamaDB db) =>
+{
+    db.Exhibitions.Add(exhibition);
+    db.SaveChanges();
+    return "Exhibition Created";
+});
+app.MapGet("api/v2/exhibitions/list", ([FromServices] BamaDB db) =>
+{
+    return db.Exhibitions.ToList();
+});
+app.MapPut("api/v2/exhibitions/update/{id}", (
+    [FromRoute] int id,
+    [FromBody] Exhibition exhibition,
+    [FromServices] BamaDB db) =>
+{
+    var newExhibition = db.Exhibitions.Find(id);
+    if (newExhibition == null)
+    {
+        return "Not Found!";
+    }
+    newExhibition.Address = exhibition.Address;
+    newExhibition.Description = exhibition.Description;
+    newExhibition.Email = exhibition.Email;
+    newExhibition.ExhibitionName = exhibition.ExhibitionName;
+    newExhibition.ExhibitionType = exhibition.ExhibitionType;
+    newExhibition.Landline = exhibition.Landline;
+    newExhibition.OwnerName = exhibition.OwnerName;
+    newExhibition.PhoneNumber = exhibition.PhoneNumber;
+    newExhibition.YourName = exhibition.YourName;
+    newExhibition.Province = exhibition.Province;
+    db.SaveChanges();
+    return "Exhibition Updated!";
+});
+app.MapDelete("api/v2/exhibitions/remove/{id}", (
+    [FromRoute] int id,
+    [FromServices] BamaDB db) =>
+{
+    var exhibition = db.Exhibitions.Find(id);
+    if (exhibition == null)
+    {
+        return "Not Found!";
+    }
+    db.Exhibitions.Remove(exhibition);
+    db.SaveChanges();
+    return "Exhibition Removed!";
+});
 app.MapPost("api/v1/heavyVehicles/creat", (HeavyVehicle heavyVehicle) =>
 {
     var db = new BamaDB();
@@ -126,7 +221,7 @@ app.MapPut("api/v1/heavyVehicles/update/{id}", (int id, HeavyVehicle heavyVehicl
         return "Not Found!";
     }
     newHeavyVehicle.BodyColor = heavyVehicle.BodyColor;
-    newHeavyVehicle.BodyCondition  =heavyVehicle.BodyCondition;
+    newHeavyVehicle.BodyCondition = heavyVehicle.BodyCondition;
     newHeavyVehicle.Brand = heavyVehicle.Brand;
     newHeavyVehicle.Gearbox = heavyVehicle.Gearbox;
     newHeavyVehicle.Madel = heavyVehicle.Madel;
@@ -139,6 +234,68 @@ app.MapPut("api/v1/heavyVehicles/update/{id}", (int id, HeavyVehicle heavyVehicl
     newHeavyVehicle.Year = heavyVehicle.Year;
     db.SaveChanges();
     return "HeavyVehicle Updated!";
+});
+app.MapDelete("api/v1/heavyVehicles/remove/{id}", (int id) =>
+{
+    var db = new BamaDB();
+    var heavyVehicles = db.HeavyVehicles.Find(id);
+    if (heavyVehicles == null)
+    {
+        return "Not Found!";
+    }
+    db.HeavyVehicles.Remove(heavyVehicles);
+    db.SaveChanges();
+    return "HeavyVehicles Removed!";
+});
+app.MapPost("api/v2/heavyVehicles/creat", (
+    [FromBody] HeavyVehicle heavyVehicle,
+    [FromServices] BamaDB db) =>
+{
+    db.HeavyVehicles.Add(heavyVehicle);
+    db.SaveChanges();
+    return "HeavyVehicle Created!";
+});
+app.MapGet("api/v2/heavyVehicles/list", ([FromServices] BamaDB db) =>
+{
+    return db.HeavyVehicles.ToList();
+});
+app.MapPut("api/v2/heavyVehicles/update/{id}", (
+    [FromRoute] int id,
+    [FromBody] HeavyVehicle heavyVehicle,
+    [FromServices] BamaDB db) =>
+{
+    var newHeavyVehicle = db.HeavyVehicles.Find(id);
+    if (newHeavyVehicle == null)
+    {
+        return "Not Found!";
+    }
+    newHeavyVehicle.BodyColor = heavyVehicle.BodyColor;
+    newHeavyVehicle.BodyCondition = heavyVehicle.BodyCondition;
+    newHeavyVehicle.Brand = heavyVehicle.Brand;
+    newHeavyVehicle.Gearbox = heavyVehicle.Gearbox;
+    newHeavyVehicle.Madel = heavyVehicle.Madel;
+    newHeavyVehicle.Mileage = heavyVehicle.Mileage;
+    newHeavyVehicle.OperatingHours = heavyVehicle.OperatingHours;
+    newHeavyVehicle.RepairHistory = heavyVehicle.RepairHistory;
+    newHeavyVehicle.UserSubcategory = heavyVehicle.UserSubcategory;
+    newHeavyVehicle.UserYype = heavyVehicle.UserYype;
+    newHeavyVehicle.VehicleType = heavyVehicle.VehicleType;
+    newHeavyVehicle.Year = heavyVehicle.Year;
+    db.SaveChanges();
+    return "HeavyVehicle Updated!";
+});
+app.MapDelete("api/v2/heavyVehicles/remove/{id}", (
+    [FromRoute] int id,
+    [FromServices] BamaDB db) =>
+{
+    var heavyVehicles = db.HeavyVehicles.Find(id);
+    if (heavyVehicles == null)
+    {
+        return "Not Found!";
+    }
+    db.HeavyVehicles.Remove(heavyVehicles);
+    db.SaveChanges();
+    return "HeavyVehicles Removed!";
 });
 app.MapPost("api/v1/installments/creat", (Installments installments) =>
 {
@@ -259,33 +416,33 @@ app.MapDelete("api/v1/users/remove/{id}", (int id) =>
     db.SaveChanges();
     return "User Removed!";
 });
-app.MapPost("api/v1/visitLocation/creat", (VisitLocation visitLocation) =>
+app.MapPost("api/v1/visitLocations/creat", (VisitLocation visitLocation) =>
 {
     var db = new BamaDB();
     db.VisitLocations.Add(visitLocation);
     db.SaveChanges();
     return "VisitLocation Created!";
 });
-app.MapGet("api/v1/visitLocation/list", () =>
+app.MapGet("api/v1/visitLocations/list", () =>
 {
     var db = new BamaDB();
     return db.VisitLocations.ToList();
 });
-app.MapPut("api/v1/visitLocation/update/{id}", (int id , VisitLocation visitLocation) =>
+app.MapPut("api/v1/visitLocations/update/{id}", (int id, VisitLocation visitLocation) =>
 {
     var db = new BamaDB();
-    var v = db.VisitLocations.Find(id);
-    if (v == null)
+    var newVisitLocation = db.VisitLocations.Find(id);
+    if (newVisitLocation == null)
     {
         return "Not Found!";
     }
-    v.City = visitLocation.City;
-    v.Province = visitLocation.Province;
-    v.Region = visitLocation.Region;
+    newVisitLocation.City = visitLocation.City;
+    newVisitLocation.Province = visitLocation.Province;
+    newVisitLocation.Region = visitLocation.Region;
     db.SaveChanges();
     return "VisitLocation Updated!";
 });
-app.MapDelete("api/v1/visitLocation/remove/{id}", (int id) =>
+app.MapDelete("api/v1/visitLocations/remove/{id}", (int id) =>
 {
     var db = new BamaDB();
     var visitLocation = db.VisitLocations.Find(id);
