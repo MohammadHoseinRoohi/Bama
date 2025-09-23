@@ -7,7 +7,7 @@ using Practice4.Entities.MotorAdvertisings;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-
+builder.Services.AddDbContext<BamaDB>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -258,6 +258,44 @@ app.MapDelete("api/v1/users/remove/{id}", (int id) =>
     db.Users.Remove(user);
     db.SaveChanges();
     return "User Removed!";
+});
+app.MapPost("api/v1/visitLocation/creat", (VisitLocation visitLocation) =>
+{
+    var db = new BamaDB();
+    db.VisitLocations.Add(visitLocation);
+    db.SaveChanges();
+    return "VisitLocation Created!";
+});
+app.MapGet("api/v1/visitLocation/list", () =>
+{
+    var db = new BamaDB();
+    return db.VisitLocations.ToList();
+});
+app.MapPut("api/v1/visitLocation/update/{id}", (int id , VisitLocation visitLocation) =>
+{
+    var db = new BamaDB();
+    var v = db.VisitLocations.Find(id);
+    if (v == null)
+    {
+        return "Not Found!";
+    }
+    v.City = visitLocation.City;
+    v.Province = visitLocation.Province;
+    v.Region = visitLocation.Region;
+    db.SaveChanges();
+    return "VisitLocation Updated!";
+});
+app.MapDelete("api/v1/visitLocation/remove/{id}", (int id) =>
+{
+    var db = new BamaDB();
+    var visitLocation = db.VisitLocations.Find(id);
+    if (visitLocation == null)
+    {
+        return "Not Found!";
+    }
+    db.VisitLocations.Remove(visitLocation);
+    db.SaveChanges();
+    return "VisitLocation Removed!";
 });
 
 app.Run();
