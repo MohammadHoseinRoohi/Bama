@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Practice4.DbContextes;
+using Practice4.DTOs.Cars;
+using Practice4.DTOs.Common;
 using Practice4.Entities;
 using Practice4.Entities.CarAdvertisements;
 using Practice4.Entities.HeavyVehicleAdvertisings;
@@ -107,6 +109,88 @@ app.MapDelete("api/v2/cars/remove/{id}", (
     db.SaveChanges();
     return "Car Removed!";
 });
+app.MapPost("api/v3/cars/creat", (
+    [FromBody] CarAddDto carAddDto,
+    [FromServices] BamaDB db) =>
+{
+    var car = new Car
+    {
+        Brand = carAddDto.Brand,
+        Madel = carAddDto.Madel,
+        Year = carAddDto.Year,
+        VehicleType = carAddDto.VehicleType,
+        Mileage = carAddDto.Mileage,
+        BodyColor = carAddDto.BodyColor,
+        BodyCondition = carAddDto.BodyCondition,
+        InteriorColor = carAddDto.InteriorColor
+    };
+    db.Cars.Add(car);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Car Created!"
+    };
+});
+app.MapGet("api/v3/cars/list", ([FromServices] BamaDB db) =>
+{
+    return db.Cars.Select(c => new CarListDto
+    {
+        Id = c.Guid,
+        Brand = c.Brand,
+        Madel = c.Madel,
+        Year = c.Year,
+        VehicleType = c.VehicleType,
+        Mileage = c.Mileage,
+        BodyColor = c.BodyColor,
+        BodyCondition = c.BodyCondition,
+        InteriorColor = c.InteriorColor
+    });
+});
+app.MapPut("api/v3/cars/update/{guid}", (
+    [FromServices] BamaDB db ,
+    [FromRoute] string guid,
+    [FromBody] CarUpdateDto carUpdateDto) =>
+{
+    var c = db.Cars.FirstOrDefault(m => m.Guid == guid);
+    if (c == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!!!"
+        };
+    }
+    c.BodyCondition = !string.IsNullOrEmpty(carUpdateDto.BodyCondition) ? carUpdateDto.BodyCondition : c.BodyCondition;
+    c.Mileage = !string.IsNullOrEmpty(carUpdateDto.Mileage) ? carUpdateDto.Mileage : c.Mileage;
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Car Updated!"
+    };
+});
+app.MapDelete("api/v3/cars/remove/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db) =>
+{
+    var car = db.Cars.FirstOrDefault(m => m.Guid == guid);
+    if (car == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!!"
+        };
+    }
+    db.Cars.Remove(car);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Car Removed!"
+    };
+});
 app.MapPost("api/v1/exhibitions/creat", (Exhibition exhibition) =>
 {
     var db = new BamaDB();
@@ -200,6 +284,15 @@ app.MapDelete("api/v2/exhibitions/remove/{id}", (
     db.SaveChanges();
     return "Exhibition Removed!";
 });
+
+
+
+
+
+
+
+
+
 app.MapPost("api/v1/heavyVehicles/creat", (HeavyVehicle heavyVehicle) =>
 {
     var db = new BamaDB();
@@ -297,6 +390,15 @@ app.MapDelete("api/v2/heavyVehicles/remove/{id}", (
     db.SaveChanges();
     return "HeavyVehicles Removed!";
 });
+
+
+
+
+
+
+
+
+
 app.MapPost("api/v1/installments/creat", (Installments installments) =>
 {
     var db = new BamaDB();
@@ -382,6 +484,15 @@ app.MapDelete("api/v2/installments/remove/{id}", (
     db.SaveChanges();
     return "Installments Removed";
 });
+
+
+
+
+
+
+
+
+
 app.MapPost("api/v1/motors/creat", (Motor motor) =>
 {
     var db = new BamaDB();
@@ -469,6 +580,15 @@ app.MapDelete("api/v2/motors/remove/{id}", (
     db.SaveChanges();
     return "Motor Removed!";
 });
+
+
+
+
+
+
+
+
+
 app.MapPost("api/v1/users/creat", (User user) =>
 {
     var db = new BamaDB();
@@ -544,6 +664,15 @@ app.MapDelete("api/v2/users/remove/{id}", (
     db.SaveChanges();
     return "User Removed!";
 });
+
+
+
+
+
+
+
+
+
 app.MapPost("api/v1/visitLocations/creat", (VisitLocation visitLocation) =>
 {
     var db = new BamaDB();
@@ -623,5 +752,14 @@ app.MapDelete("api/v2/visitLocations/remove/{id}", (
     db.SaveChanges();
     return "VisitLocation Removed!";
 });
+
+
+
+
+
+
+
+
+
 
 app.Run();
