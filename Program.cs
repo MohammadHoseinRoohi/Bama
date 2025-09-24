@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Practice4.DbContextes;
 using Practice4.DTOs.Cars;
 using Practice4.DTOs.Common;
+using Practice4.DTOs.Exhibitions;
 using Practice4.Entities;
 using Practice4.Entities.CarAdvertisements;
 using Practice4.Entities.HeavyVehicleAdvertisings;
@@ -145,10 +146,10 @@ app.MapGet("api/v3/cars/list", ([FromServices] BamaDB db) =>
         BodyColor = c.BodyColor,
         BodyCondition = c.BodyCondition,
         InteriorColor = c.InteriorColor
-    });
+    }).ToList();
 });
 app.MapPut("api/v3/cars/update/{guid}", (
-    [FromServices] BamaDB db ,
+    [FromServices] BamaDB db,
     [FromRoute] string guid,
     [FromBody] CarUpdateDto carUpdateDto) =>
 {
@@ -284,15 +285,95 @@ app.MapDelete("api/v2/exhibitions/remove/{id}", (
     db.SaveChanges();
     return "Exhibition Removed!";
 });
-
-
-
-
-
-
-
-
-
+app.MapPost("api/v3/exhibitions/creat", (
+    [FromBody] ExhibitionAddDto exhibitionAddDto,
+    [FromServices] BamaDB db) =>
+{
+    var exhibition = new Exhibition
+    {
+        ExhibitionType = exhibitionAddDto.ExhibitionType,
+        ExhibitionName = exhibitionAddDto.ExhibitionName,
+        YourName = exhibitionAddDto.YourName,
+        OwnerName = exhibitionAddDto.OwnerName,
+        PhoneNumber = exhibitionAddDto.PhoneNumber,
+        Province = exhibitionAddDto.Province,
+        Landline = exhibitionAddDto.Landline,
+        Email = exhibitionAddDto.Email,
+        Address = exhibitionAddDto.Address,
+        Description = exhibitionAddDto.Description
+    };
+    db.Exhibitions.Add(exhibition);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Exhibition Created!"
+    };
+});
+app.MapGet("api/v3/exhibitions/list", ([FromServices] BamaDB db) =>
+{
+    return db.Exhibitions.Select(e => new ExhibitionListDto
+    {
+        Id = e.Guid,
+        ExhibitionType = e.ExhibitionType,
+        ExhibitionName = e.ExhibitionName,
+        YourName = e.YourName,
+        OwnerName = e.OwnerName,
+        PhoneNumber = e.PhoneNumber,
+        Province = e.Province,
+        Landline = e.Landline,
+        Email = e.Email,
+        Address = e.Address,
+        Description = e.Description
+    }).ToList();
+});
+app.MapPut("api/v3/exhibitions/update/{guid}", (
+    [FromRoute] string guid,
+    [FromBody] ExhibitionUpdateDto exhibitionUpdateDto,
+    [FromServices] BamaDB db) =>
+{
+    var exhibition = db.Exhibitions.FirstOrDefault(m => m.Guid == guid);
+    if (exhibition == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!!"
+        };
+    }
+    exhibition.OwnerName = !string.IsNullOrEmpty(exhibitionUpdateDto.OwnerName) ? exhibitionUpdateDto.OwnerName : exhibition.OwnerName;
+    exhibition.PhoneNumber = exhibitionUpdateDto.PhoneNumber;
+    exhibition.Email = !string.IsNullOrEmpty(exhibitionUpdateDto.Email) ? exhibitionUpdateDto.Email : exhibition.Email;
+    exhibition.Address = !string.IsNullOrEmpty(exhibitionUpdateDto.Address) ? exhibitionUpdateDto.Address : exhibition.Address;
+    exhibition.Description = !string.IsNullOrEmpty(exhibitionUpdateDto.Description) ? exhibitionUpdateDto.Description : exhibition.Description;
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Exhibition Updated!"
+    };
+});
+app.MapDelete("api/v3/exhibitions/remove/{guid}", (
+    [FromRoute] string guid ,
+    [FromServices] BamaDB db) =>
+{
+    var exhibition = db.Exhibitions.FirstOrDefault(m => m.Guid == guid);
+    if (exhibition == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!!"
+        };
+    }
+    db.Exhibitions.Remove(exhibition);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Exhibition Removed!"
+    };
+});
 app.MapPost("api/v1/heavyVehicles/creat", (HeavyVehicle heavyVehicle) =>
 {
     var db = new BamaDB();
@@ -390,15 +471,6 @@ app.MapDelete("api/v2/heavyVehicles/remove/{id}", (
     db.SaveChanges();
     return "HeavyVehicles Removed!";
 });
-
-
-
-
-
-
-
-
-
 app.MapPost("api/v1/installments/creat", (Installments installments) =>
 {
     var db = new BamaDB();
@@ -484,15 +556,6 @@ app.MapDelete("api/v2/installments/remove/{id}", (
     db.SaveChanges();
     return "Installments Removed";
 });
-
-
-
-
-
-
-
-
-
 app.MapPost("api/v1/motors/creat", (Motor motor) =>
 {
     var db = new BamaDB();
@@ -580,15 +643,6 @@ app.MapDelete("api/v2/motors/remove/{id}", (
     db.SaveChanges();
     return "Motor Removed!";
 });
-
-
-
-
-
-
-
-
-
 app.MapPost("api/v1/users/creat", (User user) =>
 {
     var db = new BamaDB();
@@ -664,15 +718,6 @@ app.MapDelete("api/v2/users/remove/{id}", (
     db.SaveChanges();
     return "User Removed!";
 });
-
-
-
-
-
-
-
-
-
 app.MapPost("api/v1/visitLocations/creat", (VisitLocation visitLocation) =>
 {
     var db = new BamaDB();
@@ -752,14 +797,5 @@ app.MapDelete("api/v2/visitLocations/remove/{id}", (
     db.SaveChanges();
     return "VisitLocation Removed!";
 });
-
-
-
-
-
-
-
-
-
 
 app.Run();
