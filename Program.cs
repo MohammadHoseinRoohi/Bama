@@ -3,6 +3,9 @@ using Practice4.DbContextes;
 using Practice4.DTOs.Cars;
 using Practice4.DTOs.Common;
 using Practice4.DTOs.Exhibitions;
+using Practice4.DTOs.HeavyVehicles;
+using Practice4.DTOs.Motors;
+using Practice4.DTOs.Users;
 using Practice4.Entities;
 using Practice4.Entities.CarAdvertisements;
 using Practice4.Entities.HeavyVehicleAdvertisings;
@@ -471,6 +474,33 @@ app.MapDelete("api/v2/heavyVehicles/remove/{id}", (
     db.SaveChanges();
     return "HeavyVehicles Removed!";
 });
+////////////////////////////////////////////
+
+app.MapPost("api/v3/heavyVehicles/creat", (
+    [FromServices] BamaDB db,
+    [FromBody] HeavyVehicleAddDto heavyVehicleAddDto) =>
+{
+
+});
+app.MapGet("api/v3/heavyVehicles/list", ([FromServices] BamaDB db) =>
+{
+
+});
+app.MapPut("api/v3/heavyVehicles/update/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db,
+    [FromBody] HeavyVehicleUpdateDto heavyVehicleUpdateDto) =>
+{
+
+});
+app.MapDelete("api/v3/heavyVehicles/remove/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db) =>
+{
+
+});
+
+/////////////////////////////////////////////
 app.MapPost("api/v1/installments/creat", (Installments installments) =>
 {
     var db = new BamaDB();
@@ -556,6 +586,26 @@ app.MapDelete("api/v2/installments/remove/{id}", (
     db.SaveChanges();
     return "Installments Removed";
 });
+/////////////////////////////////
+
+app.MapPost("api/v3/installments/creat", () =>
+{
+
+});
+app.MapGet("api/v3/installments/list", () =>
+{
+
+});
+app.MapPut("api/v3/installments/update/{guid}", () =>
+{
+
+});
+app.MapDelete("api/v3/installments/remove/{guid}", () =>
+{
+
+});
+
+//////////////////////////////
 app.MapPost("api/v1/motors/creat", (Motor motor) =>
 {
     var db = new BamaDB();
@@ -643,6 +693,33 @@ app.MapDelete("api/v2/motors/remove/{id}", (
     db.SaveChanges();
     return "Motor Removed!";
 });
+/////////////////////////////////////////
+
+app.MapPost("api/v3/motors/creat", (
+    [FromServices] BamaDB db,
+    [FromBody] MotorAddDto motorAddDto) =>
+{
+
+});
+app.MapGet("api/v3/motors/list", ([FromServices] BamaDB db) =>
+{
+
+});
+app.MapPut("api/v3/motors/update/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db,
+    [FromBody] MotorUpdateDto motorUpdateDto) =>
+{
+
+});
+app.MapDelete("api/v3/motors/remove/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db) =>
+{
+
+});
+
+////////////////////////////////////////////
 app.MapPost("api/v1/users/creat", (User user) =>
 {
     var db = new BamaDB();
@@ -717,6 +794,73 @@ app.MapDelete("api/v2/users/remove/{id}", (
     db.Users.Remove(user);
     db.SaveChanges();
     return "User Removed!";
+});
+app.MapPost("api/v3/users/creat", (
+    [FromServices] BamaDB db,
+    [FromBody] UserAddDto userAddDto) =>
+{
+    var user = new User
+    {
+        PhoneNumber = userAddDto.PhoneNumber
+    };
+    db.Users.Add(user);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "User Created!"
+    };
+});
+app.MapGet("api/v3/users/list", ([FromServices] BamaDB db) =>
+{
+    return db.Users.Select(u => new UserListDto
+    {
+        Id = u.Guid,
+        PhoneNumber = u.PhoneNumber
+    });
+});
+app.MapPut("api/v3/users/update/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db,
+    [FromBody] UserUpdateDto userUpdateDto) =>
+{
+    var user = db.Users.FirstOrDefault(m => m.Guid == guid);
+    if (user == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!!"
+        };
+    }
+    user.PhoneNumber = userUpdateDto.PhoneNumber;
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "User Updated!"
+    };
+});
+app.MapDelete("api/v3/users/remove/{guid}", (
+    [FromRoute] string guid,
+    [FromServices] BamaDB db) =>
+{
+    var user = db.Users.FirstOrDefault(m => m.Guid == guid);
+    if (user == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = true,
+            Message = "Not Found!!"
+        };
+    }
+    db.Users.Remove(user);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "User Removed!"
+    };
 });
 app.MapPost("api/v1/visitLocations/creat", (VisitLocation visitLocation) =>
 {
