@@ -17,7 +17,7 @@ namespace Practice4.Entities.MotorAdvertisings
         // نوع سوخت
         public required string FuelYype { get; set; }
         // گیربکس
-        public string? Gearbox { get; set; }
+        public required string Gearbox { get; set; }
         // کارکرد
         public required string Mileage { get; set; }
         // رنگ بدنه

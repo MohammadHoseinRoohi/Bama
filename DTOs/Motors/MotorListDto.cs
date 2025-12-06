@@ -7,6 +7,20 @@ namespace Practice4.DTOs.Motors
 {
     public class MotorListDto
     {
-        
+        public string? Id { get; set; }
+        // برند 
+        public required string Brand { get; set; }
+        // مدل
+        public required string Madel { get; set; }
+        // سال
+        public double Year { get; set; }
+        // نوع سوخت
+        public required string FuelYype { get; set; }
+        // گیربکس
+        public required string Gearbox { get; set; }
+        // کارکرد
+        public required string Mileage { get; set; }
+        // رنگ بدنه
+        public required string BodyColor { get; set; }
     }
 }

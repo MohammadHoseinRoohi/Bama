@@ -357,7 +357,7 @@ app.MapPut("api/v3/exhibitions/update/{guid}", (
     };
 });
 app.MapDelete("api/v3/exhibitions/remove/{guid}", (
-    [FromRoute] string guid ,
+    [FromRoute] string guid,
     [FromServices] BamaDB db) =>
 {
     var exhibition = db.Exhibitions.FirstOrDefault(m => m.Guid == guid);
@@ -693,30 +693,90 @@ app.MapDelete("api/v2/motors/remove/{id}", (
     db.SaveChanges();
     return "Motor Removed!";
 });
-/////////////////////////////////////////
-
 app.MapPost("api/v3/motors/creat", (
     [FromServices] BamaDB db,
     [FromBody] MotorAddDto motorAddDto) =>
 {
-
+    var motor = new Motor
+    {
+        Brand = motorAddDto.Brand,
+        Madel = motorAddDto.Madel,
+        Year = motorAddDto.Year,
+        FuelYype = motorAddDto.FuelYype,
+        Gearbox = motorAddDto.Gearbox,
+        Mileage = motorAddDto.Mileage,
+        BodyColor = motorAddDto.BodyColor
+    };
+    db.Motors.Add(motor);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Motor Created"
+    };
 });
 app.MapGet("api/v3/motors/list", ([FromServices] BamaDB db) =>
 {
-
+    return db.Motors.Select(mc => new MotorListDto
+    {
+        Id = mc.Guid,
+        Brand = mc.Brand,
+        Madel = mc.Madel,
+        Year = mc.Year,
+        FuelYype = mc.FuelYype,
+        Gearbox = mc.Gearbox,
+        Mileage = mc.Mileage,
+        BodyColor = mc.BodyColor
+    }).ToList();
 });
 app.MapPut("api/v3/motors/update/{guid}", (
     [FromRoute] string guid,
     [FromServices] BamaDB db,
     [FromBody] MotorUpdateDto motorUpdateDto) =>
 {
-
+    var lastMotor = db.Motors.FirstOrDefault(m => m.Guid == guid);
+    if (lastMotor == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = true,
+            Message = "Not Found!!"
+        };
+    }
+    lastMotor.BodyColor = !string.IsNullOrEmpty(motorUpdateDto.BodyColor) ? motorUpdateDto.BodyColor : lastMotor.BodyColor;
+    lastMotor.Brand = !string.IsNullOrEmpty(motorUpdateDto.Brand) ? motorUpdateDto.Brand : lastMotor.Brand;
+    lastMotor.FuelYype = !string.IsNullOrEmpty(motorUpdateDto.FuelYype) ? motorUpdateDto.FuelYype : lastMotor.FuelYype;
+    lastMotor.Gearbox = !string.IsNullOrEmpty(motorUpdateDto.Gearbox) ? motorUpdateDto.Gearbox : lastMotor.Gearbox;
+    lastMotor.Madel = !string.IsNullOrEmpty(motorUpdateDto.Madel) ? motorUpdateDto.Madel : lastMotor.Madel;
+    lastMotor.Mileage = !string.IsNullOrEmpty(motorUpdateDto.Mileage) ? motorUpdateDto.Mileage : lastMotor.Mileage;
+    lastMotor.Year = motorUpdateDto.Year ?? lastMotor.Year;
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Motor Updated!"
+    };
 });
 app.MapDelete("api/v3/motors/remove/{guid}", (
     [FromRoute] string guid,
     [FromServices] BamaDB db) =>
 {
-
+    var motor = db.Motors.FirstOrDefault(m => m.Guid == guid);
+    if (motor == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!"
+        };
+    }
+    db.Motors.Remove(motor);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "Motor Removed!"
+    };
 });
 
 ////////////////////////////////////////////
