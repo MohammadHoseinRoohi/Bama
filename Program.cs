@@ -156,8 +156,8 @@ app.MapPut("api/v3/cars/update/{guid}", (
     [FromRoute] string guid,
     [FromBody] CarUpdateDto carUpdateDto) =>
 {
-    var c = db.Cars.FirstOrDefault(m => m.Guid == guid);
-    if (c == null)
+    var lastCar = db.Cars.FirstOrDefault(m => m.Guid == guid);
+    if (lastCar == null)
     {
         return new CommandResultDto
         {
@@ -165,8 +165,8 @@ app.MapPut("api/v3/cars/update/{guid}", (
             Message = "Not Found!!!!"
         };
     }
-    c.BodyCondition = !string.IsNullOrEmpty(carUpdateDto.BodyCondition) ? carUpdateDto.BodyCondition : c.BodyCondition;
-    c.Mileage = !string.IsNullOrEmpty(carUpdateDto.Mileage) ? carUpdateDto.Mileage : c.Mileage;
+    lastCar.BodyCondition = !string.IsNullOrEmpty(carUpdateDto.BodyCondition) ? carUpdateDto.BodyCondition : lastCar.BodyCondition;
+    lastCar.Mileage = !string.IsNullOrEmpty(carUpdateDto.Mileage) ? carUpdateDto.Mileage : lastCar.Mileage;
     db.SaveChanges();
     return new CommandResultDto
     {
@@ -335,8 +335,8 @@ app.MapPut("api/v3/exhibitions/update/{guid}", (
     [FromBody] ExhibitionUpdateDto exhibitionUpdateDto,
     [FromServices] BamaDB db) =>
 {
-    var exhibition = db.Exhibitions.FirstOrDefault(m => m.Guid == guid);
-    if (exhibition == null)
+    var lastExhibition = db.Exhibitions.FirstOrDefault(m => m.Guid == guid);
+    if (lastExhibition == null)
     {
         return new CommandResultDto
         {
@@ -344,11 +344,11 @@ app.MapPut("api/v3/exhibitions/update/{guid}", (
             Message = "Not Found!!!"
         };
     }
-    exhibition.OwnerName = !string.IsNullOrEmpty(exhibitionUpdateDto.OwnerName) ? exhibitionUpdateDto.OwnerName : exhibition.OwnerName;
-    exhibition.PhoneNumber = exhibitionUpdateDto.PhoneNumber;
-    exhibition.Email = !string.IsNullOrEmpty(exhibitionUpdateDto.Email) ? exhibitionUpdateDto.Email : exhibition.Email;
-    exhibition.Address = !string.IsNullOrEmpty(exhibitionUpdateDto.Address) ? exhibitionUpdateDto.Address : exhibition.Address;
-    exhibition.Description = !string.IsNullOrEmpty(exhibitionUpdateDto.Description) ? exhibitionUpdateDto.Description : exhibition.Description;
+    lastExhibition.OwnerName = !string.IsNullOrEmpty(exhibitionUpdateDto.OwnerName) ? exhibitionUpdateDto.OwnerName : lastExhibition.OwnerName;
+    lastExhibition.PhoneNumber = exhibitionUpdateDto.PhoneNumber ?? lastExhibition.PhoneNumber;
+    lastExhibition.Email = !string.IsNullOrEmpty(exhibitionUpdateDto.Email) ? exhibitionUpdateDto.Email : lastExhibition.Email;
+    lastExhibition.Address = !string.IsNullOrEmpty(exhibitionUpdateDto.Address) ? exhibitionUpdateDto.Address : lastExhibition.Address;
+    lastExhibition.Description = !string.IsNullOrEmpty(exhibitionUpdateDto.Description) ? exhibitionUpdateDto.Description : lastExhibition.Description;
     db.SaveChanges();
     return new CommandResultDto
     {
@@ -480,27 +480,102 @@ app.MapPost("api/v3/heavyVehicles/creat", (
     [FromServices] BamaDB db,
     [FromBody] HeavyVehicleAddDto heavyVehicleAddDto) =>
 {
-
+    var heavyVehicle = new HeavyVehicle
+    {
+        UserYype = !string.IsNullOrEmpty(heavyVehicleAddDto.UserYype) ? heavyVehicleAddDto.UserYype : "بی عنوان",
+        UserSubcategory = !string.IsNullOrEmpty(heavyVehicleAddDto.UserSubcategory) ? heavyVehicleAddDto.UserSubcategory : "بی عنوان",
+        Brand = heavyVehicleAddDto.Brand,
+        Madel = !string.IsNullOrEmpty(heavyVehicleAddDto.Madel) ? heavyVehicleAddDto.Madel : "بی عنوان",
+        Year = heavyVehicleAddDto.Year,
+        VehicleType = heavyVehicleAddDto.VehicleType,
+        Mileage = heavyVehicleAddDto.Mileage,
+        BodyCondition = heavyVehicleAddDto.BodyCondition,
+        BodyColor = heavyVehicleAddDto.BodyColor,
+        Gearbox = heavyVehicleAddDto.Gearbox,
+        RepairHistory = heavyVehicleAddDto.RepairHistory,
+        OperatingHours = !string.IsNullOrEmpty(heavyVehicleAddDto.OperatingHours) ? heavyVehicleAddDto.OperatingHours : "بی عنوان"
+    };
+    db.HeavyVehicles.Add(heavyVehicle);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "HeavyVehicle Created!"
+    };
 });
 app.MapGet("api/v3/heavyVehicles/list", ([FromServices] BamaDB db) =>
 {
-
+    return db.HeavyVehicles.Select(h => new HeavyVehicleListDto
+    {
+        Id = h.Guid,
+        UserYype = h.UserYype,
+        UserSubcategory = h.UserSubcategory,
+        Brand = h.Brand,
+        Madel = h.Madel,
+        Year = h.Year,
+        VehicleType = h.VehicleType,
+        Mileage = h.Mileage,
+        BodyCondition = h.BodyCondition,
+        BodyColor = h.BodyColor,
+        Gearbox = h.Gearbox,
+        RepairHistory = h.RepairHistory,
+        OperatingHours = h.OperatingHours
+    }).ToList();
 });
 app.MapPut("api/v3/heavyVehicles/update/{guid}", (
     [FromRoute] string guid,
     [FromServices] BamaDB db,
     [FromBody] HeavyVehicleUpdateDto heavyVehicleUpdateDto) =>
 {
-
+    var lastHeavyVehicle = db.HeavyVehicles.FirstOrDefault(m=>m.Guid == guid);
+    if (lastHeavyVehicle==null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!"
+        };
+    }
+    lastHeavyVehicle.UserYype = !string.IsNullOrEmpty(heavyVehicleUpdateDto.UserYype)?heavyVehicleUpdateDto.UserYype:lastHeavyVehicle.UserYype;
+    lastHeavyVehicle.UserSubcategory = !string.IsNullOrEmpty(heavyVehicleUpdateDto.UserSubcategory)?heavyVehicleUpdateDto.UserSubcategory:lastHeavyVehicle.UserSubcategory;
+    lastHeavyVehicle.Brand = !string.IsNullOrEmpty(heavyVehicleUpdateDto.Brand)?heavyVehicleUpdateDto.Brand:lastHeavyVehicle.Brand;
+    lastHeavyVehicle.Madel = !string.IsNullOrEmpty(heavyVehicleUpdateDto.Madel)?heavyVehicleUpdateDto.Madel:lastHeavyVehicle.Madel;
+    lastHeavyVehicle.Year = heavyVehicleUpdateDto.Year ?? lastHeavyVehicle.Year;
+    lastHeavyVehicle.VehicleType = !string.IsNullOrEmpty(heavyVehicleUpdateDto.VehicleType)?heavyVehicleUpdateDto.VehicleType:lastHeavyVehicle.VehicleType;
+    lastHeavyVehicle.Mileage = !string.IsNullOrEmpty(heavyVehicleUpdateDto.Mileage)?heavyVehicleUpdateDto.Mileage:lastHeavyVehicle.Mileage;
+    lastHeavyVehicle.BodyCondition = !string.IsNullOrEmpty(heavyVehicleUpdateDto.BodyCondition)?heavyVehicleUpdateDto.BodyCondition:lastHeavyVehicle.BodyCondition;
+    lastHeavyVehicle.BodyColor = !string.IsNullOrEmpty(heavyVehicleUpdateDto.BodyColor)?heavyVehicleUpdateDto.BodyColor:lastHeavyVehicle.BodyColor;
+    lastHeavyVehicle.Gearbox = !string.IsNullOrEmpty(heavyVehicleUpdateDto.Gearbox)?heavyVehicleUpdateDto.Gearbox:lastHeavyVehicle.Gearbox;
+    lastHeavyVehicle.RepairHistory =heavyVehicleUpdateDto.RepairHistory;
+    lastHeavyVehicle.OperatingHours = !string.IsNullOrEmpty(heavyVehicleUpdateDto.OperatingHours)?heavyVehicleUpdateDto.OperatingHours:lastHeavyVehicle.OperatingHours;
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "HeavyVehicle Updated!"        
+    };
 });
 app.MapDelete("api/v3/heavyVehicles/remove/{guid}", (
     [FromRoute] string guid,
     [FromServices] BamaDB db) =>
 {
-
+    var heavyVehicle = db.HeavyVehicles.FirstOrDefault(m=>m.Guid == guid);
+    if (heavyVehicle == null)
+    {
+        return new CommandResultDto
+        {
+            Successfull = false,
+            Message = "Not Found!!"
+        };
+    }
+    db.HeavyVehicles.Remove(heavyVehicle);
+    db.SaveChanges();
+    return new CommandResultDto
+    {
+        Successfull = true,
+        Message = "HeavyVehicle Removed!"
+    };
 });
-
-/////////////////////////////////////////////
 app.MapPost("api/v1/installments/creat", (Installments installments) =>
 {
     var db = new BamaDB();

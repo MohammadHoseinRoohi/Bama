@@ -10,7 +10,7 @@ namespace Practice4.DTOs.Exhibitions
         // نام مدیر
         public  string? OwnerName { get; set; }
         // شماره تلفن
-        public double PhoneNumber { get; set; }
+        public double? PhoneNumber { get; set; }
         // ایمیل
         public  string? Email { get; set; }
         // آدرس

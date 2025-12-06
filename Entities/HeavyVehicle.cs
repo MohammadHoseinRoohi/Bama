@@ -28,9 +28,9 @@ namespace Practice4.Entities.HeavyVehicleAdvertisings
         // رنگ بدنه
         public required string BodyColor { get; set; }
         // گیربکس
-        public string? Gearbox { get; set; }
+        public required string Gearbox { get; set; }
         // سابقه تعمیر دارد یا ندارد
-        public bool? RepairHistory { get; set; }
+        public bool RepairHistory { get; set; }
         // ساعت کارکرد
         public string? OperatingHours { get; set; }
     }
